@@ -1,6 +1,6 @@
 # Someone Talking Social API
 
-API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadastro, login, gerenciamento de perfil, feed de postagens e chat entre usuários. Ideal para portfólio e projetos profissionais.
+API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadastro, login, gerenciamento de perfil, feed de postagens e chat entre usuários.
 
 ## Funcionalidades
 
