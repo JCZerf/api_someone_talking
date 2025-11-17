@@ -1,13 +1,21 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config';
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UsersController } from './controllers/users.controller';
+import { FeedModule } from './feed.module';
 import { User } from './models/users.entity';
 import { UsersService } from './services/users.service';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -20,6 +28,7 @@ import { UsersService } from './services/users.service';
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
+    FeedModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

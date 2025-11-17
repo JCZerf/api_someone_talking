@@ -23,37 +23,47 @@ describe('UsersController (e2e)', () => {
 
   beforeEach(async () => {
     const userRepo = app.get(getRepositoryToken(User));
-    await userRepo.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
+    await userRepo.delete({ email: 'carlos@email.com' });
+    await userRepo.delete({ phone: '12345' });
+    await userRepo.delete({ email: 'carlos2@email.com' });
+    await userRepo.delete({ phone: '11988888888' });
+    await userRepo.delete({ email: 'carlos3@email.com' });
+    await userRepo.delete({ phone: '11977777777' });
   });
 
   it('should get all users', async () => {
     const userData = {
       name: 'Carlos',
-      birthDate: '1990-01-01',
+      birthDate: '2000-01-01',
       email: 'carlos@email.com',
       phone: '11988888888',
       password: 'senha123',
     };
 
+    // Cria o usuário
     await request(app.getHttpServer())
       .post('/auth/registration')
       .send(userData)
       .expect(200);
 
+    // Busca todos os usuários
     const response = await request(app.getHttpServer())
       .get('/users')
       .expect(200);
 
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body[0]).toHaveProperty('email', userData.email);
-    expect(response.body[0]).not.toHaveProperty('password');
+
+    // Ajuste aqui: busca pelo e-mail
+    const found = response.body.find((u) => u.email === userData.email);
+    expect(found).toBeDefined();
+    expect(found).not.toHaveProperty('password');
   });
 
   it('should update a user', async () => {
     const userData = {
       name: 'Carlos',
       birthDate: '1990-01-01',
-      email: 'carlos@email.com',
+      email: 'carlos2@email.com',
       phone: '11988888888',
       password: 'senha123',
     };
@@ -85,8 +95,8 @@ describe('UsersController (e2e)', () => {
     const userData = {
       name: 'Carlos',
       birthDate: '1990-01-01',
-      email: 'carlos@email.com',
-      phone: '11988888888',
+      email: 'carlos3@email.com',
+      phone: '11977777777',
       password: 'senha123',
     };
 

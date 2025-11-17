@@ -1,5 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from 'src/models/users.entity';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 
@@ -20,17 +22,23 @@ describe('UsersController (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await app
-      .get('UserRepository')
-      .query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
+    const userRepo = app.get(getRepositoryToken(User));
+    await userRepo.delete({ email: 'joao@email.com' });
+    await userRepo.delete({ phone: '11999999998' });
+    await userRepo.delete({ email: 'carlos@email.com' });
+    await userRepo.delete({ phone: '12345' });
+    await userRepo.delete({ email: 'ana@email.com' });
+    await userRepo.delete({ phone: '11999999999' });
+    await userRepo.delete({ email: 'maria@email.com' });
+    await userRepo.delete({ phone: '11999999997' });
   });
 
   it('should create a user with valid data', async () => {
     const userData = {
       name: 'João',
       birthDate: '2000-01-01',
-      email: 'joao@email.com',
-      phone: '11999999999',
+      email: 'joaosilva@email.com',
+      phone: '11999999998',
       password: 'senha123',
     };
 
@@ -49,7 +57,7 @@ describe('UsersController (e2e)', () => {
       name: 'Maria',
       birthDate: '2000-01-01',
       email: 'invalid-email',
-      phone: '11999999999',
+      phone: '11999999997',
       password: 'senha123',
     };
 
