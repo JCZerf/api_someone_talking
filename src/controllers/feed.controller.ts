@@ -8,8 +8,10 @@ import {
   Put,
   Req,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -21,6 +23,7 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -42,7 +45,7 @@ export class FeedController {
     return this.feedService.create({
       caption: body.caption,
       mediaUrl,
-      user: req.user,
+      userId: req.user.id,
     });
   }
 

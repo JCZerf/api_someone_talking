@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/models/users.entity';
 import { Repository } from 'typeorm';
 import { Feed } from '../models/feed.entity';
 
@@ -8,10 +9,24 @@ export class FeedService {
   constructor(
     @InjectRepository(Feed)
     private readonly feedRepository: Repository<Feed>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(data: Partial<Feed>): Promise<Feed> {
-    const feed = this.feedRepository.create(data);
+  async create(data: {
+    caption: string;
+    mediaUrl?: string;
+    userId: string;
+  }): Promise<Feed> {
+    const user = await this.userRepository.findOne({
+      where: { id: data.userId },
+    });
+    if (!user) throw new Error('Usuário não encontrado');
+    const feed = this.feedRepository.create({
+      caption: data.caption,
+      mediaUrl: data.mediaUrl,
+      user,
+    });
     return this.feedRepository.save(feed);
   }
 
