@@ -23,7 +23,8 @@ describe('AuthController (e2e)', () => {
 
   beforeEach(async () => {
     const userRepo = app.get(getRepositoryToken(User));
-    await userRepo.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
+    await userRepo.delete({ email: 'joao@email.com' });
+    await userRepo.delete({ email: 'maria@email.com' });
   });
 
   it('should login with valid credentials', async () => {
@@ -31,7 +32,7 @@ describe('AuthController (e2e)', () => {
       name: 'João',
       birthDate: '2000-01-01',
       email: 'joao@email.com',
-      phone: '11999999999',
+      phone: '11999999989',
       password: 'senha123',
     };
 
@@ -61,7 +62,7 @@ describe('AuthController (e2e)', () => {
       name: 'Maria',
       birthDate: '2000-01-01',
       email: 'maria@email.com',
-      phone: '11999999999',
+      phone: '11999999979',
       password: 'senha123',
     };
 

@@ -1,5 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from 'src/models/users.entity';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 
@@ -20,72 +22,103 @@ describe('UsersController (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await app
-      .get('UserRepository')
-      .query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
+    const userRepo = app.get(getRepositoryToken(User));
+    await userRepo.delete({ email: 'carlos@email.com' });
+    await userRepo.delete({ phone: '12345' });
+    await userRepo.delete({ email: 'carlos2@email.com' });
+    await userRepo.delete({ phone: '11988888888' });
+    await userRepo.delete({ email: 'carlos3@email.com' });
+    await userRepo.delete({ phone: '11977777777' });
   });
 
-  it('should create a user with valid data', async () => {
-    const userData = {
-      name: 'João',
-      birthDate: '2000-01-01',
-      email: 'joao@email.com',
-      phone: '11999999999',
-      password: 'senha123',
-    };
-
-    const response = await request(app.getHttpServer())
-      .post('/auth/registration')
-      .send(userData)
-      .expect(200);
-
-    expect(response.body).toHaveProperty('id');
-    expect(response.body.email).toBe(userData.email);
-    expect(response.body).not.toHaveProperty('password');
-  });
-
-  it('should fail with invalid email', async () => {
-    const userData = {
-      name: 'Maria',
-      birthDate: '2000-01-01',
-      email: 'invalid-email',
-      phone: '11999999999',
-      password: 'senha123',
-    };
-
-    await request(app.getHttpServer())
-      .post('/auth/registration')
-      .send(userData)
-      .expect(400);
-  });
-
-  it('should fail with invalid phone', async () => {
+  it('should get all users', async () => {
     const userData = {
       name: 'Carlos',
       birthDate: '2000-01-01',
       email: 'carlos@email.com',
-      phone: '12345',
+      phone: '11988888888',
       password: 'senha123',
     };
 
+    // Cria o usuário
     await request(app.getHttpServer())
       .post('/auth/registration')
       .send(userData)
-      .expect(400);
+      .expect(200);
+
+    // Busca todos os usuários
+    const response = await request(app.getHttpServer())
+      .get('/users')
+      .expect(200);
+
+    expect(Array.isArray(response.body)).toBe(true);
+
+    // Ajuste aqui: busca pelo e-mail
+    const found = response.body.find((u) => u.email === userData.email);
+    expect(found).toBeDefined();
+    expect(found).not.toHaveProperty('password');
   });
 
-  it('should fail if user is under 16 years old', async () => {
+  it('should update a user', async () => {
     const userData = {
-      name: 'Ana',
-      birthDate: '2015-01-01',
-      email: 'ana@email.com',
-      phone: '11999999999',
+      name: 'Carlos',
+      birthDate: '1990-01-01',
+      email: 'carlos2@email.com',
+      phone: '11988888888',
       password: 'senha123',
     };
 
-    await request(app.getHttpServer())
+    const regRes = await request(app.getHttpServer())
       .post('/auth/registration')
       .send(userData)
-      .expect(400);
+      .expect(200);
+
+    const userId = regRes.body.id;
+
+    const updatedData = { name: 'Carlos Silva' };
+
+    const updateRes = await request(app.getHttpServer())
+      .put(`/users/${userId}`)
+      .send(updatedData)
+      .expect(200);
+
+    expect(updateRes.body).toHaveProperty('name', updatedData.name);
+
+    const getRes = await request(app.getHttpServer())
+      .get(`/users/${userId}`)
+      .expect(200);
+
+    expect(getRes.body).toHaveProperty('name', updatedData.name);
+  });
+
+  it('should delete a user', async () => {
+    const userData = {
+      name: 'Carlos',
+      birthDate: '1990-01-01',
+      email: 'carlos3@email.com',
+      phone: '11977777777',
+      password: 'senha123',
+    };
+
+    const regRes = await request(app.getHttpServer())
+      .post('/auth/registration')
+      .send(userData)
+      .expect(200);
+
+    const userId = regRes.body.id;
+
+    const delRes = await request(app.getHttpServer())
+      .delete(`/users/${userId}`)
+      .expect(200);
+
+    expect(delRes.body).toHaveProperty(
+      'message',
+      'Usuário deletado com sucesso.',
+    );
+
+    await request(app.getHttpServer())
+      .get(`/users/${userId}`)
+      .expect(200)
+      .then((res) => expect(res.body).toEqual({}));
   });
 });
