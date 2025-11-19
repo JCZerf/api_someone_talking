@@ -6,8 +6,13 @@ import {
   Logger,
   Post,
   UnauthorizedException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { AuthService } from 'src/services/auth.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +34,22 @@ export class AuthController {
 
   @Post('registration')
   @HttpCode(200)
-  async registration(@Body() userData: any) {
+  @UseInterceptors(
+    FileInterceptor('profilePhoto', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, uniqueSuffix + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  async registration(
+    @Body() userData: any,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     this.logger.log(`Tentativa de registro para o email: ${userData.email}`);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,6 +76,8 @@ export class AuthController {
     if (ageFinal < 16) {
       throw new BadRequestException('Usuário deve ter pelo menos 16 anos.');
     }
+
+    userData.profilePhotoUrl = file ? `/uploads/${file.filename}` : '';
 
     // Criação do usuário
     const user = await this.authService.register(userData);

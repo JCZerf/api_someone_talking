@@ -7,9 +7,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { User } from '../users/users.entity';
 import { FeedComment } from './feed.comment.entity';
 import { FeedLike } from './feed.like.entity';
-import { User } from './users.entity';
 
 @Entity()
 export class Feed {

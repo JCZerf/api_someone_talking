@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/models/users.entity';
+import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
-import { Feed } from '../models/feed.entity';
+import { Feed } from './feed.entity';
 
 @Injectable()
 export class FeedService {
