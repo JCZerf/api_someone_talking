@@ -5,7 +5,8 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 ## Funcionalidades
 
 - Cadastro e autenticação de usuários (JWT)
-- Perfil de usuário (consulta, edição, remoção)
+- Cadastro de usuário com foto de perfil (upload)
+- Perfil de usuário (consulta, edição, remoção, foto de perfil)
 - Feed social: criação, listagem e interação com postagens
 - Chat em tempo real entre usuários (em desenvolvimento)
 - Testes automatizados (unitários e e2e)
@@ -21,6 +22,7 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 
 - `GET /users/:id` — Consulta de perfil
 - `PUT /users/:id` — Atualização de dados
+- `POST /users/:id/profile-photo` — Upload/atualização da foto de perfil
 - `DELETE /users/:id` — Remoção de usuário
 
 ### Feed (em breve)
@@ -40,6 +42,7 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 - TypeORM (PostgreSQL)
 - JWT para autenticação
 - BcryptJS para hash de senhas
+- Multer para upload de arquivos
 - WebSocket para chat (em breve)
 - Jest para testes
 
@@ -131,7 +134,7 @@ Desenvolvido por **JCarlos Zerf**
 ## Roadmap
 
 - [x] Cadastro e login de usuários
-- [x] Gerenciamento de perfil
+- [x] Gerenciamento de perfil e foto de perfil
 - [x] Testes automatizados
 - [ ] Feed de postagens
 - [ ] Sistema de curtidas e comentários
@@ -140,7 +143,7 @@ Desenvolvido por **JCarlos Zerf**
 
 ## Status do Projeto
 
-🚧 **Em desenvolvimento** - Versão atual: v1.0.0
+🚧 **Em desenvolvimento** - Versão atual: v2.0.0
 
 A API está funcional para cadastro, login e gerenciamento de usuários. As funcionalidades de feed e chat estão em desenvolvimento.
 
