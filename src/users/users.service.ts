@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { User } from '../models/users.entity';
+import { User } from './users.entity';
 
 @Injectable()
 export class UsersService {
@@ -10,6 +10,14 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  async updateProfilePhoto(
+    id: string,
+    profilePhotoUrl: string,
+  ): Promise<User | null> {
+    await this.userRepository.update(id, { profilePhotoUrl });
+    return this.findOne(id);
+  }
 
   async create(userData: Partial<User>): Promise<User> {
     const user = this.userRepository.create(userData);

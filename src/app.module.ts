@@ -4,10 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { UsersController } from './controllers/users.controller';
-import { FeedModule } from './feed.module';
-import { User } from './models/users.entity';
-import { UsersService } from './services/users.service';
+import { FeedModule } from './feed/feed.module';
+import { UsersController } from './users/users.controller';
+import { User } from './users/users.entity';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [

@@ -15,8 +15,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { Feed } from '../models/feed.entity';
-import { FeedService } from '../services/feed.service';
+import { Feed } from './feed.entity';
+import { FeedService } from './feed.service';
 
 @Controller('feeds')
 export class FeedController {

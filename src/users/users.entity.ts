@@ -1,12 +1,15 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { FeedComment } from './feed.comment.entity';
-import { Feed } from './feed.entity';
-import { FeedLike } from './feed.like.entity';
+import { FeedComment } from '../feed/feed.comment.entity';
+import { Feed } from '../feed/feed.entity';
+import { FeedLike } from '../feed/feed.like.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ nullable: true })
+  profilePhotoUrl: string;
 
   @Column()
   name: string;

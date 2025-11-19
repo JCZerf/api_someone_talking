@@ -5,8 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Feed } from './feed.entity';
-import { User } from './users.entity';
+import { Feed } from '../feed/feed.entity';
+import { User } from '../users/users.entity';
 
 @Entity()
 export class FeedComment {
