@@ -57,6 +57,70 @@ cd someone_talking_project/api_someone_talking
 npm install
 ```
 
+## Ambiente de Desenvolvimento
+
+### Configuração do Banco de Dados com Docker
+
+O projeto inclui um arquivo `docker-compose.yml` para facilitar a criação do banco PostgreSQL localmente.  
+Para subir o banco:
+
+```bash
+docker-compose up -d
+```
+
+### Configuração de Variáveis de Ambiente
+
+Copie o arquivo `.env.example` para `.env` e ajuste os dados conforme necessário:
+
+```bash
+cp .env.example .env
+```
+
+Exemplo de `.env`:
+
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=someone_talking_user
+DB_PASSWORD=someone_talking_pass
+DB_DATABASE=someone_talking
+```
+
+### Migrations
+
+Após instalar as dependências e subir o banco, rode as migrations para criar as tabelas:
+
+```bash
+npx ts-node ./node_modules/typeorm/cli.js migration:run -d src/data-source.ts
+```
+
+### Seed de Dados
+
+Para popular o banco com dados de exemplo (usuários, posts, likes), execute:
+
+```bash
+npx ts-node src/seed.ts
+```
+
+O seed inclui um usuário fixo para desenvolvimento:
+
+- **Email:** teste@teste.com
+- **Senha:** teste123
+
+---
+
+**Resumo do fluxo de desenvolvimento:**
+
+1. Configure o `.env` usando o `.env.example`.
+2. Suba o banco com `docker-compose up -d`.
+3. Rode as migrations.
+4. Execute o seed para popular o banco.
+5. Inicie a API com `npm run start:dev`.
+
+---
+
+Essas instruções garantem que qualquer desenvolvedor possa iniciar rapidamente o projeto em ambiente local!
+
 ## Execução
 
 ```bash
