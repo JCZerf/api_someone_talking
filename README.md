@@ -122,7 +122,7 @@ POST /chat/:userId
 
 ## Sobre o Projeto
 
-Este projeto é parte de uma rede social em desenvolvimento, com foco em boas práticas, escalabilidade e segurança. Novas funcionalidades como feed e chat serão lançadas em breve.
+Este projeto é parte de uma rede social em desenvolvimento, com foco em boas práticas, escalabilidade e segurança.
 
 ## Sobre o Autor
 
