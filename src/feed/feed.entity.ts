@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
 import { User } from '../users/users.entity';
 import { FeedComment } from './feed.comment.entity';
 import { FeedLike } from './feed.like.entity';
@@ -20,8 +19,8 @@ export class Feed {
   @Column({ length: 280 })
   caption: string;
 
-  @Column({ nullable: true })
-  mediaUrl: string; // URL da imagem ou vídeo
+  @Column({ type: 'varchar', nullable: true })
+  mediaUrl: string | null;
 
   @ManyToOne(() => User, (user) => user.feeds, { eager: true })
   user: User; // Autor da postagem

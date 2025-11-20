@@ -5,8 +5,8 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Feed } from '../feed/feed.entity';
 import { User } from '../users/users.entity';
+import { Feed } from './feed.entity';
 
 @Entity()
 @Unique(['feed', 'user'])
