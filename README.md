@@ -7,7 +7,7 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 - Cadastro e autenticação de usuários (JWT)
 - Cadastro de usuário com foto de perfil (upload)
 - Perfil de usuário (consulta, edição, remoção, foto de perfil)
-- Feed social: criação, listagem, curtidas e comentários (em desenvolvimento)
+- Feed social: criação, edição (com troca ou remoção de imagem), listagem, curtidas (com contador e status do usuário logado) e comentários (em desenvolvimento)
 - Sistema de curtidas em postagens
 - Testes automatizados (unitários e e2e)
 - Chat em tempo real entre usuários (em desenvolvimento)
@@ -28,8 +28,9 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 
 ### Feed
 
-- `GET /feed` — Listar postagens
+- `GET /feed` — Listar postagens (retorna também o nome do autor, quantidade de likes e se o usuário logado curtiu cada post)
 - `POST /feed` — Criar nova postagem
+- `PUT /feed/:id` — Editar postagem (permite trocar ou remover imagem)
 - `POST /feed/:id/like` — Curtir postagem
 - `POST /feed/:id/comment` — Comentar postagem (em desenvolvimento)
 
@@ -105,11 +106,32 @@ Content-Type: application/json
 }
 ```
 
-### Feed (em breve)
+### Feed
 
 ```http
+# Listar postagens (retorna nome do autor, quantidade de likes, se o usuário logado curtiu)
 GET /feed
+
+# Criar nova postagem
 POST /feed
+Content-Type: multipart/form-data
+
+{
+  "caption": "Primeiro post!",
+  "file": <imagem opcional>
+}
+
+# Editar postagem (trocar ou remover imagem)
+PUT /feed/:id
+Content-Type: multipart/form-data
+
+{
+  "caption": "Novo texto",
+  "file": <nova imagem opcional>,
+  "removeImage": true
+}
+
+# Curtir postagem
 POST /feed/:id/like
 ```
 
@@ -122,7 +144,7 @@ POST /chat/:userId
 
 ## Sobre o Projeto
 
-Este projeto é parte de uma rede social em desenvolvimento, com foco em boas práticas, escalabilidade e segurança.
+Este projeto é parte de uma rede social em desenvolvimento, com foco em boas práticas, escalabilidade e segurança. Novas funcionalidades como feed (com edição de imagem, likes otimizados e status do usuário logado) e chat serão lançadas em breve.
 
 ## Sobre o Autor
 
