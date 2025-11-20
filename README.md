@@ -7,9 +7,10 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 - Cadastro e autenticação de usuários (JWT)
 - Cadastro de usuário com foto de perfil (upload)
 - Perfil de usuário (consulta, edição, remoção, foto de perfil)
-- Feed social: criação, listagem e interação com postagens
-- Chat em tempo real entre usuários (em desenvolvimento)
+- Feed social: criação, listagem, curtidas e comentários (em desenvolvimento)
+- Sistema de curtidas em postagens
 - Testes automatizados (unitários e e2e)
+- Chat em tempo real entre usuários (em desenvolvimento)
 
 ## Principais Rotas
 
@@ -25,13 +26,14 @@ API RESTful para uma rede social moderna, desenvolvida com NestJS. Permite cadas
 - `POST /users/:id/profile-photo` — Upload/atualização da foto de perfil
 - `DELETE /users/:id` — Remoção de usuário
 
-### Feed (em breve)
+### Feed
 
 - `GET /feed` — Listar postagens
 - `POST /feed` — Criar nova postagem
 - `POST /feed/:id/like` — Curtir postagem
+- `POST /feed/:id/comment` — Comentar postagem (em desenvolvimento)
 
-### Chat (em breve)
+### Chat (em desenvolvimento)
 
 - `GET /chat/:userId` — Listar mensagens com usuário
 - `POST /chat/:userId` — Enviar mensagem
@@ -136,8 +138,9 @@ Desenvolvido por **JCarlos Zerf**
 - [x] Cadastro e login de usuários
 - [x] Gerenciamento de perfil e foto de perfil
 - [x] Testes automatizados
-- [ ] Feed de postagens
-- [ ] Sistema de curtidas e comentários
+- [x] Feed de postagens
+- [x] Sistema de curtidas
+- [ ] Sistema de comentários
 - [ ] Chat em tempo real
 - [ ] Notificações push
 
@@ -145,7 +148,7 @@ Desenvolvido por **JCarlos Zerf**
 
 🚧 **Em desenvolvimento** - Versão atual: v2.0.0
 
-A API está funcional para cadastro, login e gerenciamento de usuários. As funcionalidades de feed e chat estão em desenvolvimento.
+A API está funcional para cadastro, login, gerenciamento de usuários, feed de postagens e sistema de curtidas. Funcionalidades de comentários e chat estão em desenvolvimento.
 
 ---
 
