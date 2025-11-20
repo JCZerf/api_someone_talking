@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.entity';
 
 @Injectable()
@@ -32,12 +32,17 @@ export class UsersService {
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  async update(id: string, userData: Partial<User>): Promise<User | null> {
-    if (userData.password) {
-      const saltRounds = 10;
-      userData.password = await bcrypt.hash(userData.password, saltRounds);
-    }
-    await this.userRepository.update(id, userData);
+  async update(id: string, userData: UpdateUserDto): Promise<User | null> {
+    const { name, birthDate, phone, profilePhotoUrl } = userData;
+
+    const updateData: Partial<User> = {};
+    if (name !== undefined) updateData.name = name;
+    if (birthDate !== undefined) updateData.birthDate = new Date(birthDate);
+    if (phone !== undefined) updateData.phone = phone;
+    if (profilePhotoUrl !== undefined)
+      updateData.profilePhotoUrl = profilePhotoUrl;
+
+    await this.userRepository.update(id, updateData);
     return this.findOne(id);
   }
 

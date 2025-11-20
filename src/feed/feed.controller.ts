@@ -50,8 +50,11 @@ export class FeedController {
   }
 
   @Get()
-  async findAll(): Promise<Feed[]> {
-    return this.feedService.findAll();
+  @UseGuards(AuthGuard('jwt'))
+  async findAll(
+    @Req() req,
+  ): Promise<Array<Feed & { likeCount: number; likedByMe: boolean }>> {
+    return this.feedService.findAllWithLikeCountAndLikedByMe(req.user.userId);
   }
 
   @Get(':id')
@@ -60,10 +63,27 @@ export class FeedController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, uniqueSuffix + extname(file.originalname));
+        },
+      }),
+    }),
+  )
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<Feed>,
+    @Body() data: Partial<Feed> & { removeImage?: boolean },
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<Feed | null> {
+    if (file) {
+      data.mediaUrl = `/uploads/${file.filename}`;
+    }
     return this.feedService.update(id, data);
   }
 
