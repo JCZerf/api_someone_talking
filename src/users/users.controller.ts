@@ -13,6 +13,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponseDto } from './dto/user-response.dto';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
@@ -50,30 +52,29 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(): Promise<Omit<User, 'password'>[]> {
+  async findAll(): Promise<UserResponseDto[]> {
     this.logger.log('Buscando todos os usuários');
     const users = await this.usersService.findAll();
-    return users.map(({ password, ...rest }) => rest);
+    return users.map(toUserResponseDto);
   }
 
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-  ): Promise<Omit<User, 'password'> | null> {
+  async findOne(@Param('id') id: string): Promise<UserResponseDto | null> {
     this.logger.log(`Buscando usuário com id: ${id}`);
     const user = await this.usersService.findOne(id);
     if (!user) return null;
-    const { password, ...rest } = user;
-    return rest;
+    return toUserResponseDto(user);
   }
 
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() userData: Partial<User>,
-  ): Promise<User | null> {
+    @Body() userData: UpdateUserDto,
+  ): Promise<UserResponseDto | null> {
     this.logger.log(`Atualizando usuário com id: ${id}`);
-    return await this.usersService.update(id, userData);
+    const user = await this.usersService.update(id, userData);
+    if (!user) return null;
+    return toUserResponseDto(user);
   }
 
   @Delete(':id')
@@ -82,4 +83,14 @@ export class UsersController {
     await this.usersService.remove(id);
     return { message: 'Usuário deletado com sucesso.' };
   }
+}
+
+function toUserResponseDto(user: User): UserResponseDto {
+  return {
+    id: user.id,
+    name: user.name,
+    birthDate: user.birthDate,
+    email: user.email,
+    phone: user.phone,
+  };
 }

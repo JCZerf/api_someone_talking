@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { AuthService } from 'src/auth/auth.service';
+import { RegistrationUserDto } from './dto/registration-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -47,24 +48,11 @@ export class AuthController {
     }),
   )
   async registration(
-    @Body() userData: any,
+    @Body() userData: RegistrationUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     this.logger.log(`Tentativa de registro para o email: ${userData.email}`);
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!userData.email || !emailRegex.test(userData.email)) {
-      throw new BadRequestException('Email deve estar em um formato válido.');
-    }
-    const telefoneRegex = /^\d{11}$/;
-    if (!userData.phone || !telefoneRegex.test(userData.phone)) {
-      throw new BadRequestException(
-        'Telefone deve conter 11 dígitos numéricos (formato pt-BR).',
-      );
-    }
-    if (!userData.birthDate) {
-      throw new BadRequestException('Data de nascimento é obrigatória.');
-    }
+    // Validação da idade mínima
     const dateOfBirth = new Date(userData.birthDate);
     const today = new Date();
     const age = today.getFullYear() - dateOfBirth.getFullYear();
