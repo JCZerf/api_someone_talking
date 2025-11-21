@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as fs from 'fs';
 import { Repository } from 'typeorm';
 import { User } from '../users/users.entity';
+import { FeedComment } from './feed.comment.entity';
 import { Feed } from './feed.entity';
+import { FeedLike } from './feed.like.entity';
 
 @Injectable()
 export class FeedService {
@@ -12,6 +14,10 @@ export class FeedService {
     private readonly feedRepository: Repository<Feed>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(FeedComment)
+    private readonly commentRepository: Repository<FeedComment>,
+    @InjectRepository(FeedLike)
+    private readonly likeRepository: Repository<FeedLike>,
   ) {}
 
   async create(data: {
@@ -108,6 +114,10 @@ export class FeedService {
   }
 
   async remove(id: string): Promise<void> {
+    await this.likeRepository.delete({ feed: { id } });
+    await this.commentRepository.delete({ feed: { id } });
+
+    // Remover arquivo de mídia, se existir
     const feed = await this.findOne(id);
     if (feed?.mediaUrl) {
       const filePath = '.' + feed.mediaUrl;
@@ -119,6 +129,8 @@ export class FeedService {
         }
       }
     }
+
+    // Remover o feed
     await this.feedRepository.delete(id);
   }
 }

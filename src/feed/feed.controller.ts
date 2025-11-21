@@ -45,7 +45,7 @@ export class FeedController {
     return this.feedService.create({
       caption: body.caption,
       mediaUrl,
-      userId: req.user.id,
+      userId: req.user.userId,
     });
   }
 

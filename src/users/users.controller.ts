@@ -88,6 +88,7 @@ export class UsersController {
 function toUserResponseDto(user: User): UserResponseDto {
   return {
     id: user.id,
+    profilePhotoUrl: user.profilePhotoUrl,
     name: user.name,
     birthDate: user.birthDate,
     email: user.email,
